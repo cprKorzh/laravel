@@ -2,6 +2,9 @@
 
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ReportController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\DashboardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -15,8 +18,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return view('welcome');
-});
+    return view('home');
+})->name('home');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -26,6 +29,19 @@ Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+
+    Route::get('/apply', [ReportController::class, 'create'])->name('dashboard');
+    Route::post('/apply', [ReportController::class, 'store'])->name('report.store');
+
+    Route::middleware(['admin'])->group(function () {
+        Route::get('/admin/reports', [AdminController::class, 'index'])->name('admin.reports');
+        Route::post('/admin/reports/{report}/approve', [AdminController::class, 'approve'])->name('admin.reports.approve');
+        Route::post('/admin/reports/{report}/reject', [AdminController::class, 'reject'])->name('admin.reports.reject');
+    });
 });
 
-require __DIR__.'/auth.php';
+
+
+require __DIR__ . '/auth.php';
