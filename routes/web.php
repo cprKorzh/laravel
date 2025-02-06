@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ReportController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\HomeController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,9 +18,7 @@ use App\Http\Controllers\DashboardController;
 |
 */
 
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/dashboard', function () {
     return view('dashboard');
@@ -35,7 +34,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/apply', [ReportController::class, 'create'])->name('dashboard');
     Route::post('/apply', [ReportController::class, 'store'])->name('report.store');
 
-    Route::middleware(['admin'])->group(function () {
+    Route::middleware(['auth', 'admin'])->group(function () {
         Route::get('/admin/reports', [AdminController::class, 'index'])->name('admin.reports');
         Route::post('/admin/reports/{report}/approve', [AdminController::class, 'approve'])->name('admin.reports.approve');
         Route::post('/admin/reports/{report}/reject', [AdminController::class, 'reject'])->name('admin.reports.reject');

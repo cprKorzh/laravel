@@ -22,7 +22,18 @@ class User extends Authenticatable
         'tel',
         'email',
         'password',
+        'is_admin'
     ];
+
+    public function isAdmin()
+    {
+        return $this->is_admin;
+    }
+
+    public function report()
+    {
+        return $this->hasOne(Report::class);
+    }
 
     /**
      * The attributes that should be hidden for serialization.
